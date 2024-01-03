@@ -7,7 +7,7 @@
         "php": ">=7.1",
         "ext-json": "*",
         "illuminate/log": "^5.8|^6.0",
-        "symfony/console": "^4.3.4"
+        "symfony/console": "^5.3.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.0"
