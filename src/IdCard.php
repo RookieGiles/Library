@@ -103,7 +103,7 @@ class IdCard
      *
      * @return bool
      */
-    private function checkFormat()
+    private function checkFormat(): bool
     {
         if (! preg_match('/^([\d]{17}[xX\d]|[\d]{15})$/', $this->idCard)) {
             return false;
@@ -116,7 +116,7 @@ class IdCard
      *
      * @return boolean
      */
-    protected function checkBirthday()
+    protected function checkBirthday(): bool
     {
         if ($this->idLength == 18) {
             $birthday = substr($this->idCard, 6, 4) .'-'. substr($this->idCard, 10, 2)
@@ -140,7 +140,7 @@ TAG;
      *
      * @return boolean
      */
-    protected function checkLastCode()
+    protected function checkLastCode(): bool
     {
         if ($this->idLength == 15) {
             return true;
@@ -162,7 +162,7 @@ TAG;
      *
      * @return boolean
      */
-    protected function checkProvince()
+    protected function checkProvince(): bool
     {
         $path = dirname(__FILE__);
         $provinceJson = file_get_contents($path.'/data/IdCard_province.json');
@@ -181,7 +181,7 @@ TAG;
      * @return string
      *
      */
-    private function getProvince()
+    private function getProvince(): string
     {
         $path = dirname(__FILE__);
         $provinceJson = file_get_contents($path.'/data/IdCard_province.json');
@@ -197,7 +197,7 @@ TAG;
      *
      * @return string
      */
-    private function getCity()
+    private function getCity(): string
     {
         $path = dirname(__FILE__);
         $cityJson = file_get_contents($path.'/data/IdCard_city.json');
@@ -241,7 +241,7 @@ TAG;
      *
      * @return string
      */
-    private function getZodiac()
+    private function getZodiac(): string
     {
         $start = 1901;
         if ($this->idLength == 18) {
@@ -295,7 +295,7 @@ TAG;
      *
      * @return string
      */
-    private function getGender()
+    private function getGender(): string
     {
         if ($this->idLength == 18) {
             $gender = $this->idCard{16};
@@ -327,7 +327,7 @@ TAG;
      *
      * @return string
      */
-    private function getStar()
+    private function getStar(): string
     {
         if ($this->idLength == 18) {
             $star   = substr($this->idCard, 10, 4);
@@ -372,7 +372,7 @@ TAG;
      *
      * @return string
      */
-    private function getBirthday()
+    private function getBirthday(): string
     {
         if ($this->idLength == 18) {
             return substr($this->idCard, 6, 4) .'-'. substr($this->idCard, 10, 2)

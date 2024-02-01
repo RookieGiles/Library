@@ -2,8 +2,7 @@
 namespace Giles\Library\Component\Log;
 
 use Illuminate\Log\Logger;
-use Illuminate\Log\LogManager;
-use Illuminate\Support\HigherOrderTapProxy;
+use Illuminate\Log\LogManager as manager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\ArgvInput;
 use Throwable;
@@ -11,19 +10,20 @@ use Monolog\Logger as Monolog;
 
 /**
  *
- * 基于 illuminate/log 扩展的日志组件
+ * 基于 MonoLog 扩展的日志组件
  * @package Giles\Library\Component\Log
  *
  * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
  * @date 2024/1/3 11:58
  */
-class LoggerManager extends LogManager
+class LoggManager extends manager
 {
+    /** @var string 默认通道 */
     const PHP_BUSINESS_LOGIC = 'logic';
 
     /** @var array 日志驱动句柄 */
     protected $logger = [];
-    /** @var string 日志名，可用于切分文件存储 */
+    /** @var string 日志通道，可用于切分文件存储 */
     protected $logChannel;
 
     /**
@@ -47,7 +47,7 @@ class LoggerManager extends LogManager
      * createLogger 创建一个日志句柄
      *
      * @param $name
-     * @return HigherOrderTapProxy|mixed
+     * @return mixed
      * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
      * @date 2024/1/3 12:00
      */
@@ -60,10 +60,10 @@ class LoggerManager extends LogManager
     }
 
     /**
-     * get 获取日志写入实例
+     * get 获取日志驱动
      *
      * @param $name
-     * @return HigherOrderTapProxy|mixed|LoggerInterface
+     * @return mixed|LoggerInterface
      * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
      * @date 2024/1/3 13:34
      */

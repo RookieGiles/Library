@@ -186,9 +186,7 @@ final class Snowflake
         }
 
         // 截取时间二进制值的低self::TIMESTAMP_BITS位
-        $pastMicroSecondLowBit = $pastMillisecond & self::MAX_MILLISECOND_TIMESTAMP;
-
-        return $pastMicroSecondLowBit;
+        return $pastMillisecond & self::MAX_MILLISECOND_TIMESTAMP;
     }
 
     /**
