@@ -73,17 +73,18 @@ class LogManager implements LoggerInterface
      * 单文件写入方式 实例
      *
      * @return mixed
+     * @throws \Exception
      * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
      * @date 2024/2/5 15:56
      */
     protected function singleDriver()
     {
-        $logger = new Write(
+        $logger = new Writer(
             new Logger($this->logChannel())
         );
-        $logger->module = $this->module;
+
         $logger->useSingle($this->logChannel());
-        $this->delChannel();
+
         return $logger->getLogger();
     }
 
@@ -96,22 +97,22 @@ class LogManager implements LoggerInterface
      */
     protected function dailyDriver()
     {
-        $logger = new Write(
+        $logger = new Writer(
             new Logger($this->logChannel())
         );
-        $logger->module = $this->module;
+
         $logger->useDaily($this->logChannel());
-        $this->delChannel();
+
         return $logger->getLogger();
     }
 
-    protected function logChannel()
+    protected function logChannel(): string
     {
         if (!empty($this->logChannel)) {
             return $this->logChannel;
         }
         if (strnatcmp(PHP_SAPI, 'cli') === 0) {
-            $this->module = 'CLI';
+            $this->logChannel = 'CLI';
         }
 
         return Config::$defaultLog;
