@@ -6,7 +6,7 @@
     "require": {
         "php": ">=7.1",
         "ext-json": "*",
-        "ext-mongo": "*",
+        "ext-mongodb": "*",
         "symfony/console": "^5.3.4"
 
     },
