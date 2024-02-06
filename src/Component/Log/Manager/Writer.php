@@ -110,8 +110,8 @@ class Writer implements LoggerInterface
     protected function setFormatter(HandlerInterface $handler)
     {
         //验证是否开启Buffer
-
         $handler = Config::isBuffer() ? new BufferHandler($handler) : $handler;
+        $this->logger->pushHandler($handler);
 
         $this->logger->pushProcessor(new HandleDataProcessor());
         $this->logger->pushProcessor(new HostProcessor());
