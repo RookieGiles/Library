@@ -64,20 +64,32 @@ class LogManager implements LoggerInterface
         }
     }
 
-    protected function mongoDbDriver()
+    /**
+     * 写入MongoDb数据库
+     *
+     * @return LoggerInterface
+     * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
+     * @date 2024/2/6 13:40
+     */
+    protected function mongoDbDriver(): LoggerInterface
     {
-        return true;
+        $logger = new Writer(
+            new Logger($this->logChannel())
+        );
+
+        $logger->useMongoDb($this->logChannel());
+
+        return $logger->getLogger();
     }
 
     /**
      * 单文件写入方式 实例
      *
-     * @return mixed
-     * @throws \Exception
+     * @return LoggerInterface
      * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
      * @date 2024/2/5 15:56
      */
-    protected function singleDriver()
+    protected function singleDriver(): LoggerInterface
     {
         $logger = new Writer(
             new Logger($this->logChannel())
@@ -91,11 +103,11 @@ class LogManager implements LoggerInterface
     /**
      * 多文件&&日期切割方式 实例
      *
-     * @return mixed
+     * @return LoggerInterface
      * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
      * @date 2024/2/5 15:56
      */
-    protected function dailyDriver()
+    protected function dailyDriver(): LoggerInterface
     {
         $logger = new Writer(
             new Logger($this->logChannel())

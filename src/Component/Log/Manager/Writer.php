@@ -7,8 +7,10 @@ use Giles\Library\Component\Log\Processor\HostProcessor;
 use Giles\Library\Component\Log\Processor\IntrospectionProcessor;
 use Giles\Library\Component\Log\Processor\TraceProcessor;
 use InvalidArgumentException;
+use MongoClient;
 use Monolog\Handler\BufferHandler;
 use Monolog\Handler\HandlerInterface;
+use Monolog\Handler\MongoDBHandler;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -62,7 +64,6 @@ class Writer implements LoggerInterface
      * @param string $logChannel
      *
      * @return void
-     * @throws \Exception
      * @author  Giles <giles.wang@aliyun.com|giles.wang@qq.com>
      * @date    2019/11/29 17:22
      */
@@ -70,10 +71,20 @@ class Writer implements LoggerInterface
     {
         $level = Config::isDebug()  ? 'debug' : Config::lowLevel();
         $file = Config::get('path') . '/'. $logChannel .'.log';
-        $handler = new StreamHandler(
-            $file,
-            $this->level($level)
-        );
+        $handler = new StreamHandler($file, $this->level($level));
+        $handler->setFormatter(SelectFormat::get(Config::get('format')));
+        $this->setFormatter($handler);
+    }
+
+    /**
+     * @throws \MongoConnectionException
+     */
+    public function useMongoDb(string $logChannel)
+    {
+        $mongoClient = new MongoClient(Config::getMongoConf());
+
+        $handler = new MongoDBHandler($mongoClient, 'scs_log', '');
+
         $handler->setFormatter(SelectFormat::get(Config::get('format')));
         $this->setFormatter($handler);
     }

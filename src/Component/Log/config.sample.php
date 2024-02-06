@@ -30,7 +30,12 @@ return [
         //日志文件接入kafka
         'Kafka' => [],
         //日志文件直接写入mongodb
-        'mongodb' => []
+        'mongodb' => [
+            'driver'  => 'daily',
+            'host'    => '',
+            'level'   => 'info',
+            'format'  => 'json'
+        ]
     ],
 ];
 

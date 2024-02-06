@@ -8,11 +8,10 @@ class Config
     /** @var string 默认使用驱动 */
     protected static $drive;
     /** @var array 文件流支持的驱动类型 */
-    protected static $streamDrive = ['single', 'daily', 'mongo'];
+    protected static $streamDrive = ['single', 'daily', 'mongodb'];
     /** @var array 日志基础配置文件配置 */
     protected static $checkConf = [
-        'driver'  => ['null' => false, 'value' => ['single', 'daily']],
-        'project' => ['null' => false],
+        'driver'  => ['null' => false, 'value' => ['single', 'daily', 'mongodb']],
         'path'    => ['null' => false],
         'level'   => ['null' => true, 'value' => ['debug', 'info', 'notice', 'warning']],
         'format'  => ['null' => true],
@@ -33,11 +32,6 @@ class Config
     /** @var string 默认通道名称 最终生成文件名 */
     public static $defaultLog = 'application';
 
-    /** @var string 自定义写入文件 */
-    protected static $filePath;
-
-    /** @var string 自定义写入行数 */
-    protected static $fileLine;
     /**
      * 是否开启debug 模式
      *
@@ -51,40 +45,6 @@ class Config
     }
 
     /**
-     * 设置自定义记录文件和行数
-     *
-     * @param string|null $file
-     * @param string|null $line
-     *
-     * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
-     * @date   2019/12/6 17:16
-     */
-    public static function setFileLine(string $file = null, string $line = null): void
-    {
-        self::$filePath = $file;
-        self::$fileLine = $line;
-    }
-
-    /**
-     * 获取自定义记录文件和行数
-     *
-     * @return array
-     * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
-     * @date   2019/12/6 17:17
-     */
-    public static function getFileLine(): array
-    {
-        $fileLine = [];
-        if (!empty(self::$filePath) && !empty(self::$fileLine)) {
-            $fileLine['file'] = self::$filePath;
-            $fileLine['line'] = self::$fileLine;
-        }
-        self::$filePath = self::$fileLine = null;
-
-        return $fileLine;
-    }
-
-    /**
      * 是否开启Buffer支持
      *
      * @return mixed
@@ -94,6 +54,18 @@ class Config
     public static function isBuffer()
     {
         return self::$conf['buffer'];
+    }
+
+    /**
+     * 获取mongoDb 链接配置
+     *
+     * @return mixed
+     * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
+     * @date 2024/2/6 13:47
+     */
+    public static function getMongoConf()
+    {
+        return self::$conf['drivers']['mongodb']['host'];
     }
 
     /**
