@@ -26,7 +26,7 @@ class HandleDataProcessor implements ProcessorInterface
                 unset($record[$key]);
             }
             //时间格式化
-            if ($item instanceof \DateTime) {
+            if ($item instanceof \DateTime || $item instanceof \Monolog\DateTimeImmutable) {
                 $record[$key] = $item->format('Y-m-d H:i:s.u');
             }
         }
