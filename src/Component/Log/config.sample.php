@@ -2,11 +2,10 @@
 /**
  * 日志组件配置文件样例
  */
+
 return [
     //默认驱动
-    'default' => 'daily',
-    //日志接入项目
-    'project' => 'bhc-timeline-service',
+    'default' => 'mongodb',
     //是否开启debug
     'debug'   => false,
     //是否开启Buffer
@@ -16,28 +15,30 @@ return [
         //单一文件驱动
         'single' => [
             'driver'  => 'single',
-            'path'    => '/data/log/php/wwwroot/project',
+            'path'    => storage_path('logs'),
             'level'   => 'debug',
             'format'  => 'line'
         ],
         //增加日期文件夹并且分模块拆分文件
         'daily' => [
             'driver'  => 'daily',
-            'path'    => '/data/log/php/wwwroot/project',
-            'level'   => 'info',
+            'path'    => storage_path('logs'),
+            'level'   => 'debug',
             'format'  => 'line'
         ],
         //日志文件接入kafka
         'Kafka' => [],
         //日志文件直接写入mongodb
         'mongodb' => [
-            'driver'  => 'daily',
-            'host'    => '',
-            'level'   => 'info',
-            'format'  => 'json'
+            'driver'  => 'mongodb',
+            'path'    => 'root:123456@lnmp-mongodb:27017',
+            'database' => 'scs_log',
+            'level'   => 'debug',
+            'format'  => 'mongo'
         ]
     ],
 ];
+
 
 /*
 |----------------------------------------------------------------
