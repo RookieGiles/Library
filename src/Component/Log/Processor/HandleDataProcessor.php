@@ -6,11 +6,6 @@ use Monolog\Processor\ProcessorInterface;
 
 class HandleDataProcessor implements ProcessorInterface
 {
-    /** @var array 不需要的字段 */
-    protected $removes = [
-        'channel'
-    ];
-
     /**
      * @param array $record
      *
@@ -21,10 +16,6 @@ class HandleDataProcessor implements ProcessorInterface
     public function __invoke(array $record): array
     {
         foreach ($record as $key => $item) {
-            //移出不需要的字段
-            if (in_array($key, $this->removes)) {
-                unset($record[$key]);
-            }
             //时间格式化
             if ($item instanceof \DateTime || $item instanceof \Monolog\DateTimeImmutable) {
                 $record[$key] = $item->format('Y-m-d H:i:s.u');

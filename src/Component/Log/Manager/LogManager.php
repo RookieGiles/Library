@@ -16,6 +16,9 @@ class LogManager implements LoggerInterface
     /** @var LogManager|null 当前实例 */
     protected static $instance = null;
 
+    /** @var string 模块名 */
+    protected $module;
+
     /**
      * 初始化日志组件 初始化配置文件&&初始化链路
      *
@@ -29,6 +32,27 @@ class LogManager implements LoggerInterface
         if (self::$instance === null) {
             self::$instance = $this;
         }
+    }
+
+    public function getLogger(string $channel = null)
+    {
+        if (empty($channel)) {
+            $this->logChannel = null;
+            return $this;
+        }
+
+        $this->module = $channel;
+
+        return self::$logger[$channel] ?? $this->createLogger($channel);
+    }
+
+    public function createLogger(string $channel = null)
+    {
+        $this->logChannel = $channel ?: '';
+
+        self::$logger[$channel] = $this->driver();
+
+        return self::$logger[$channel];
     }
 
     /**
