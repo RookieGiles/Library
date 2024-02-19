@@ -7,13 +7,13 @@ use Giles\Library\Component\Log\Processor\HostProcessor;
 use Giles\Library\Component\Log\Processor\IntrospectionProcessor;
 use Giles\Library\Component\Log\Processor\TraceProcessor;
 use InvalidArgumentException;
-use MongoClient;
 use Monolog\Handler\BufferHandler;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Handler\MongoDBHandler;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use MongoDB\Client as MongoDBClient;
 use Psr\Log\LoggerInterface;
 
 class Writer implements LoggerInterface
@@ -77,14 +77,23 @@ class Writer implements LoggerInterface
     }
 
     /**
-     * @throws \MongoConnectionException
+     * 写入MongoDB 数据库
+     *
+     * @param string $logChannel
+     * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
+     * @date 2024/2/19 16:00
      */
     public function useMongoDb(string $logChannel)
     {
-        $mongoClient = new MongoClient(Config::getMongoConf());
+        $mongoConf = Config::getMongoConf();
 
-        $handler = new MongoDBHandler($mongoClient, 'scs_log', '');
+        $link = "mongodb://".$mongoConf['host'];
+        $mongoClient = new MongoDBClient($link);
 
+        // 选择数据库和集合
+        $database = $mongoClient->selectDatabase($mongoConf['database']);
+        $collection = $database->selectCollection($mongoConf['database']);
+        $handler = new MongoDBHandler($mongoClient, $database, $collection);
         $handler->setFormatter(SelectFormat::get(Config::get('format')));
         $this->setFormatter($handler);
     }

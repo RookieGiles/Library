@@ -3,6 +3,7 @@ namespace Giles\Library\Component\Log\Manager;
 
 use Giles\Library\Component\Log\Config;
 use Giles\Library\Component\Log\Formatter\JsonFormatter;
+use Giles\Library\Component\Log\Formatter\MongoFormatter;
 use Giles\Library\Component\Log\Formatter\LineFormatter;
 use Giles\Library\Component\Log\Formatter\WriteFormat;
 
@@ -18,7 +19,7 @@ class SelectFormat
      * @author liuxd <liuxd@guahao.com>
      * @date   2021/8/25 下午4:36
      */
-    public static function get(string $type = 'line'): LineFormatter
+    public static function get(string $type = 'line')
     {
         if (! method_exists(new self, $type)) {
             return self::line();
@@ -39,6 +40,17 @@ class SelectFormat
     protected static function json(): JsonFormatter
     {
         return new JsonFormatter();
+    }
+
+    /**
+     * mongodb格式
+     *
+     * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
+     * @date 2024/2/19 15:59
+     */
+    protected static function mongo(): MongoFormatter
+    {
+        return new MongoFormatter();
     }
 
     /**

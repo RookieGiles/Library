@@ -11,19 +11,21 @@ class Config
     protected static $streamDrive = ['single', 'daily', 'mongodb'];
     /** @var array 日志基础配置文件配置 */
     protected static $checkConf = [
-        'driver'  => ['null' => false, 'value' => ['single', 'daily', 'mongodb']],
-        'path'    => ['null' => false],
-        'level'   => ['null' => true, 'value' => ['debug', 'info', 'notice', 'warning']],
-        'format'  => ['null' => true],
-        'debug'   => ['null' => true],
-        'buffer'  => ['null' => true],
+        'driver'   => ['null' => false, 'value' => ['single', 'daily', 'mongodb']],
+        'path'     => ['null' => false],
+        'database' => ['null' => true],
+        'level'    => ['null' => true, 'value' => ['debug', 'info', 'notice', 'warning']],
+        'format'   => ['null' => true],
+        'debug'    => ['null' => true],
+        'buffer'   => ['null' => true],
     ];
     /** @var array 组件配置文件 */
     protected static $conf = [
         'debug'      => false,
         'buffer'     => true,
         'format'     => 'json',
-        'level'      => 'debug'
+        'level'      => 'debug',
+        'database'   => '',
     ];
 
     /** @var string 日志写入日期格式 */
@@ -65,7 +67,10 @@ class Config
      */
     public static function getMongoConf()
     {
-        return self::$conf['drivers']['mongodb']['host'];
+        return [
+            'host'     => self::$conf['path'],
+            'database' => self::$conf['database']
+        ];
     }
 
     /**
@@ -157,6 +162,7 @@ class Config
             throw new InvalidArgumentException('日志组件初始化失败，缺少必要参数配置');
         }
         self::$drive = $config['default'];
+
         if (!in_array(self::$drive, self::$streamDrive)) {
             throw new InvalidArgumentException('当前日志组件只支持， single, daily 两种驱动方式');
         }
@@ -170,7 +176,7 @@ class Config
         //解析必要配置
         foreach (self::$checkConf as $key => $value) {
             //检测必要的配置参数
-            if ($value['null'] === false && (!isset($driverConf[$key]) || empty($driverConf[$key]))) {
+            if ($value['null'] === false && (empty($driverConf[$key]))) {
                 throw new InvalidArgumentException('日志组件初始化失败，缺少必要参数配置'. $key);
             }
             //检测参数配置值合法性

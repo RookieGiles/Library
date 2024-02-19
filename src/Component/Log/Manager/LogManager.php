@@ -26,7 +26,6 @@ class LogManager implements LoggerInterface
     public function __construct(array $config = [])
     {
         Config::set($config);
-
         if (self::$instance === null) {
             self::$instance = $this;
         }
@@ -50,6 +49,7 @@ class LogManager implements LoggerInterface
             return self::$logger[$this->logChannel()];
         }
         $driver = $driver ?? Config::get('driver');
+
         switch ($driver) {
             case 'daily':
                 return $this->dailyDriver();
@@ -266,12 +266,12 @@ class LogManager implements LoggerInterface
      * Dynamically call the default driver instance.
      *
      * @param string $method
-     * @param array  $parameters
+     * @param array $parameters
      *
      * @return mixed
      * @throws \Exception
      */
-    public function __call($method, $parameters)
+    public function __call(string $method, array $parameters)
     {
         return $this->driver()->$method(...$parameters);
     }

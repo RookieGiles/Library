@@ -1,7 +1,6 @@
 <?php
 namespace Giles\Library\Component\Log\Formatter;
 
-use Exception;
 use Monolog\Formatter\JsonFormatter as MonoJsonFormatter;
 use Monolog\Utils;
 use Throwable;
@@ -42,7 +41,7 @@ class JsonFormatter extends MonoJsonFormatter
      * @param mixed $data
      * @param int   $depth
      *
-     * @return array|mixed|string
+     * @return array|bool|float|int|string|null
      * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
      * @date   2020/1/6 10:07
      */

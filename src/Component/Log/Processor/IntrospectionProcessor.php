@@ -13,7 +13,7 @@ class IntrospectionProcessor implements ProcessorInterface
 
     public function __construct(
         $level = Logger::DEBUG,
-        array $skipClassesPartials = ['Psr\\', 'Bhc\\', 'Monolog\\', 'Illuminate\\', 'illuminate\\']
+        array $skipClassesPartials = ['Monolog\\', 'Giles\\', 'Psr\\', 'Illuminate\\', 'illuminate\\']
     ) {
         $this->level = Logger::toMonologLevel($level);
         $this->skipClassesPartials = $skipClassesPartials;
@@ -29,14 +29,6 @@ class IntrospectionProcessor implements ProcessorInterface
         if ($record['level'] < $this->level) {
             return $record;
         }
-        // 自定义写入文件和行数
-        $fileLine = Config::getFileLine();
-        if (!empty($fileLine)) {
-            $record['file'] = $this->fileSplit($fileLine['file']);
-            $record['line'] = $fileLine['line'];
-
-            return $record;
-        }
 
         $trace = debug_backtrace();
         // skip first since it's always the current method
@@ -45,8 +37,10 @@ class IntrospectionProcessor implements ProcessorInterface
         array_shift($trace);
 
         $i = 0;
+
         while (isset($trace[$i]['class'])) {
             foreach ($this->skipClassesPartials as $part) {
+
                 if (strpos($trace[$i]['class'], $part) !== false) {
                     $i++;
                     continue 2;
