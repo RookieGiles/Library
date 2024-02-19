@@ -9,7 +9,6 @@
         "ext-mongodb": "*",
         "symfony/console": "^5.3.4",
         "mongodb/mongodb": "^1.17"
-
     },
     "require-dev": {
         "phpunit/phpunit": "^7.0",
