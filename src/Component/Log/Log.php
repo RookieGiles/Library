@@ -21,7 +21,6 @@ use RuntimeException;
  *
  * @see LogManager
  *
- * @deprecated
  */
 
 class Log
