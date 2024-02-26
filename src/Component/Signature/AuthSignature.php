@@ -78,7 +78,7 @@ class AuthSignature
         //签名计算
         $hmac = hash_hmac($this->signatureType, $signatureStr, $this->secretKey);
 
-        if ($hmac != $signature) {
+        if ($hmac != base64_decode($signature)) {
             $this->error[] = '签名验证失败';
             return false;
         }
