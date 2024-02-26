@@ -37,7 +37,7 @@ class AuthSignature
         //对传入参数按key进行正序排列
         ksort($payload);
         // 格式化为 key=value& 类型的字符串
-        $queryString = http_build_query($payload);
+        $queryString = urlencode(http_build_query($payload));
         // 随机数
         $nonce = Uuid::generate(8);
         // 当前时间戳
@@ -72,7 +72,7 @@ class AuthSignature
         //对传入参数按key进行正序排列
         ksort($payload);
         // 格式化为 key=value& 类型的字符串
-        $queryString = http_build_query($payload);
+        $queryString = urlencode(http_build_query($payload));
         //拼接随机数和时间戳
         $signatureStr = $queryString. $nonce. $timestamp;
         //签名计算
