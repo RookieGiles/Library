@@ -123,12 +123,24 @@ class AuthSignature
     /**
      * 错误信息
      *
-     * @return array|mixed
+     * @return array
      * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
      * @date 2024/2/27 15:36
      */
-    public function errors()
+    public function errors():array
     {
         return $this->error;
+    }
+
+    /**
+     * 获取第一条错误信息
+     *
+     * @return string
+     * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
+     * @date 2024/2/27 16:44
+     */
+    public function error():string
+    {
+        return $this->error[0] ?? '';
     }
 }
