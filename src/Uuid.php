@@ -20,7 +20,7 @@ class Uuid
      */
     private static function generateUuid(int $length):string
     {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $characters = '0123456789abcdef';
         $randomString = '';
         for ($i = 0; $i < $length; $i++) {
             $randomString .= $characters[rand(0, strlen($characters) - 1)];
