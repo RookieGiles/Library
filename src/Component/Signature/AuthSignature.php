@@ -21,15 +21,10 @@ class AuthSignature
 
     /** @var int 签名有效期 秒 */
     protected $signatureTime = 60;
-
-    private $headerClientId  = 'yo-client-id';
-    private $headerNonce     = 'yo-nonce';
-    private $headerTimestamp = 'yo-timestamp';
-    private $headerSignature = 'yo-signature';
-
+    /** @var array 错误集合 */
     protected $error = [];
 
-    public function __construct(string $secretKey)
+    public function __construct(string $secretKey = null)
     {
         $this->secretKey = $secretKey;
     }
@@ -86,9 +81,13 @@ class AuthSignature
      */
     public function verify(array $headers, array $payload):bool
     {
-        //header头校验
-        $must = [$this->headerClientId, $this->headerNonce, $this->headerTimestamp, $this->headerSignature];
+        if (empty($this->secretKey)) {
+            $this->error[] = '缺少签名密钥，请检查'. SignatureEnum::CLIENT_ID . '是否正确';
+            return false;
+        }
 
+        //header头校验
+        $must = [SignatureEnum::CLIENT_ID, SignatureEnum::NONCE, SignatureEnum::TIMESTAMP, SignatureEnum::SIGNATURE];
         foreach ($must as $item) {
             if (empty($headers[$item])) {
                 $this->error[] = '缺少必要头部协议【'. $item. '】';
@@ -100,7 +99,7 @@ class AuthSignature
         }
 
         //校验有效时间
-        if (time() - $headers[$this->headerTimestamp] > $this->signatureTime) {
+        if (time() - $headers[SignatureEnum::TIMESTAMP] > $this->signatureTime) {
             $this->error[] = '签名过期，请重新进行签名或校准本机时间';
             return false;
         }
@@ -109,11 +108,11 @@ class AuthSignature
         // 格式化为 key=value& 类型的字符串
         $queryString = urlencode(http_build_query($payload));
         //拼接随机数和时间戳
-        $signatureStr = $queryString. $headers[$this->headerNonce]. $headers[$this->headerTimestamp];
+        $signatureStr = $queryString. $headers[SignatureEnum::NONCE]. $headers[SignatureEnum::TIMESTAMP];
         //签名计算
         $hmac = hash_hmac($this->signatureType, $signatureStr, $this->secretKey);
 
-        if ($hmac != base64_decode($headers[$this->headerSignature])) {
+        if ($hmac != base64_decode($headers[SignatureEnum::SIGNATURE])) {
             $this->error[] = '签名验证失败';
             return false;
         }
