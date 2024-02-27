@@ -22,7 +22,17 @@ class AuthSignature
     /** @var int 签名有效期 秒 */
     protected $signatureTime = 60;
 
+    private $headerClientId  = 'yo-client-id';
+    private $headerNonce     = 'yo-nonce';
+    private $headerTimestamp = 'yo-timestamp';
+    private $headerSignature = 'yo-signature';
+
     protected $error = [];
+
+    public function __construct(string $secretKey)
+    {
+        $this->secretKey = $secretKey;
+    }
 
     /**
      * 生成签名
@@ -53,19 +63,44 @@ class AuthSignature
     /**
      * 生成secretKey
      *
-     * @return string
+     * @return array
      * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
      * @date 2024/2/23 17:07
      */
-    public function buildSecret():string
+    public function buildSecret():array
     {
-        return Uuid::generate(128);
+        return [
+            'client-id'  => Uuid::generate(32),
+            'secret-key' => Uuid::generate(128)
+        ];
     }
 
-    public function verify(string $signature, array $payload, string $nonce, string $timestamp):bool
+    /**
+     * 验证签名
+     *
+     * @param array $headers
+     * @param array $payload
+     * @return bool
+     * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
+     * @date 2024/2/27 15:35
+     */
+    public function verify(array $headers, array $payload):bool
     {
+        //header头校验
+        $must = [$this->headerClientId, $this->headerNonce, $this->headerTimestamp, $this->headerSignature];
+
+        foreach ($must as $item) {
+            if (empty($headers[$item])) {
+                $this->error[] = '缺少必要头部协议【'. $item. '】';
+            }
+        }
+
+        if (!empty($this->error)) {
+            return false;
+        }
+
         //校验有效时间
-        if (time() - $timestamp > $this->signatureTime) {
+        if (time() - $headers[$this->headerTimestamp] > $this->signatureTime) {
             $this->error[] = '签名过期，请重新进行签名或校准本机时间';
             return false;
         }
@@ -74,11 +109,11 @@ class AuthSignature
         // 格式化为 key=value& 类型的字符串
         $queryString = urlencode(http_build_query($payload));
         //拼接随机数和时间戳
-        $signatureStr = $queryString. $nonce. $timestamp;
+        $signatureStr = $queryString. $headers[$this->headerNonce]. $headers[$this->headerTimestamp];
         //签名计算
         $hmac = hash_hmac($this->signatureType, $signatureStr, $this->secretKey);
 
-        if ($hmac != base64_decode($signature)) {
+        if ($hmac != base64_decode($headers[$this->headerSignature])) {
             $this->error[] = '签名验证失败';
             return false;
         }
@@ -86,6 +121,13 @@ class AuthSignature
         return true;
     }
 
+    /**
+     * 错误信息
+     *
+     * @return array|mixed
+     * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
+     * @date 2024/2/27 15:36
+     */
     public function errors()
     {
         return $this->error;
