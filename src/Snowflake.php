@@ -92,17 +92,17 @@ final class Snowflake
      * @author Giles <giles.wang@aliyun.com|giles.wang@qq.com>
      * @date   2019/12/24 14:35
      */
-    private static function getMachineId()
+    private static function getMachineId(): int
     {
         if (empty(self::$machineId)) {
             $hostName = gethostname();
             //将机器名的md5值中的数字取出 对1024 取模，计算机器号
-            $achineId = preg_replace('/\D/s', '', md5($hostName)) % 1024;
+            $machineId = preg_replace('/\D/s', '', md5($hostName)) % 1024;
 
-            if (self::MAX_MACHINE_ID < $achineId) {
+            if (self::MAX_MACHINE_ID < $machineId) {
                 throw new \RuntimeException('机器ID大于允许的最大值');
             }
-            self::$machineId = $achineId;
+            self::$machineId = $machineId;
         }
 
         return self::$machineId;
